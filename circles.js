@@ -26,8 +26,14 @@ class Circle {
         
         if (this === largestCircle) {
             ctx.fillStyle = 'rgba(40, 300, 255, 0.8)'; // Shiny blue
-            ctx.strokeStyle = 'rgba(255, 20, 147, 0.8)'; // Pink
-            ctx.lineWidth = 2;
+        
+            // Create a color-changing effect using Math.sin() and Date.now()
+            const colorShift = (Math.sin(Date.now() * 0.002) + 1) / 2;
+            const red = 255 * colorShift;
+            const blue = 255 * (1 - colorShift);
+            ctx.strokeStyle = `rgba(${red}, 20, ${blue}, 0.8)`; // Flashing between blue and pink
+        
+            ctx.lineWidth = 5;
         } else {
             ctx.fillStyle = this.color;
             ctx.strokeStyle = this.color;
@@ -38,13 +44,23 @@ class Circle {
         ctx.stroke();
         ctx.closePath();
     
-        // Draw the letter
-        ctx.font = `${Math.floor(this.radius * 0.7)}px Arial`;
+         // Draw the letter
+    ctx.font = `${Math.floor(this.radius * 0.7)}px Arial`;
+
+    // Apply the flashing effect to the letter
+    if (this === largestCircle) {
+        const colorShift = (Math.sin(Date.now() * 0.002) + 1) / 2;
+        const red = 255 * colorShift;
+        const blue = 255 * (1 - colorShift);
+        ctx.fillStyle = `rgba(${red}, 20, ${blue}, 0.8)`; // Flashing between blue and pink
+    } else {
         ctx.fillStyle = 'white';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(this.letter, this.x, this.y);
     }
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.letter, this.x, this.y);
+}
     
 
     update(canvas, circles) {

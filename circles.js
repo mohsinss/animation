@@ -8,12 +8,9 @@ class Circle {
         this.color = color;
         this.growRate = 0.05;
         this.attractionForce = 0.0001;
-        this.friction = 0.70; // Adjust this value
-        //this.letter = String.fromCharCode(Math.floor(random(65, 91)));
-        // const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+        this.friction = 0.70;
         const arabicLetters = "ABIGAEL";
         this.collisionCounter = 0;
-
         this.letter = arabicLetters[Math.floor(random(0, arabicLetters.length))];
     }
     
@@ -64,21 +61,31 @@ class Circle {
     
 
     update(canvas, circles) {
-         // Collision with borders
-    if (this.x + this.radius > canvas.width) {
-        this.x = canvas.width - this.radius;
-        this.dx = -this.dx;
-    } else if (this.x - this.radius < 0) {
-        this.x = this.radius;
-        this.dx = -this.dx;
-    }
-    if (this.y + this.radius > canvas.height) {
-        this.y = canvas.height - this.radius;
-        this.dy = -this.dy;
-    } else if (this.y - this.radius < 0) {
-        this.y = this.radius;
-        this.dy = -this.dy;
-    }
+    
+            // Collision with borders
+            let borderCollision = false;
+            if (this.x + this.radius > canvas.width) {
+                this.x = canvas.width - this.radius;
+                this.dx = -this.dx;
+                borderCollision = true;
+            } else if (this.x - this.radius < 0) {
+                this.x = this.radius;
+                this.dx = -this.dx;
+                borderCollision = true;
+            }
+            if (this.y + this.radius > canvas.height) {
+                this.y = canvas.height - this.radius;
+                this.dy = -this.dy;
+                borderCollision = true;
+            } else if (this.y - this.radius < 0) {
+                this.y = this.radius;
+                this.dy = -this.dy;
+                borderCollision = true;
+            }
+    
+            if (borderCollision) {
+                this.radius *= 0.9;
+            }
     
         let isConnected = false;
         const largestCircle = getLargestCircle();

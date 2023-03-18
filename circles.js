@@ -138,6 +138,10 @@ function getLargestCircle() {
         return circle.radius > largest.radius ? circle : largest;
     }, circles[0]);
 }
+function getSecondLargestCircle() {
+    const sortedCircles = [...circles].sort((a, b) => b.radius - a.radius);
+    return sortedCircles[1];
+}
 
 function createCircles(numCircles) {
     for (let i = 0; i < numCircles; i++) {

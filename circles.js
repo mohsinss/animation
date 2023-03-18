@@ -209,7 +209,7 @@ function createCircles(numCircles) {
         circles.push(new Circle(x, y, radius, dx, dy, color));
     }
 }
-
+let previousLargestCircle = null;
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -217,8 +217,23 @@ function animate() {
         circle.draw(ctx);
         circle.update(canvas, circles);
     }
+    const currentLargestCircle = getLargestCircle();
+    if (previousLargestCircle !== currentLargestCircle) {
+        previousLargestCircle = currentLargestCircle;
+        flashBorder();
+    }
     updateCollisionList(); // Update the list of circles and their collision counts
     requestAnimationFrame(animate);
+}
+
+
+function flashBorder() {
+    const borderFlashDuration = 500; // milliseconds
+    canvas.style.border = '5px solid yellow';
+
+    setTimeout(() => {
+        canvas.style.border = '5px solid green';
+    }, borderFlashDuration);
 }
 // Add a function to update the list of circles and their collision counts
 function updateCollisionList() {

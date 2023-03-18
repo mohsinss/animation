@@ -177,9 +177,16 @@ function updateCollisionList() {
     const collisionList = document.getElementById("collisionList");
     collisionList.innerHTML = "";
 
+    // Calculate the total number of collisions
+    const totalCollisions = circles.reduce((total, circle) => total + circle.collisionCounter, 0);
+
     for (const circle of circles) {
         const listItem = document.createElement("li");
-        listItem.textContent = `Circle ${circles.indexOf(circle) + 1}: ${circle.collisionCounter} collisions`;
+
+        // Calculate the percentage of collisions for the current circle
+        const collisionPercentage = totalCollisions === 0 ? 0 : ((circle.collisionCounter / totalCollisions) * 100).toFixed(2);
+
+        listItem.textContent = `Circle ${circles.indexOf(circle) + 1}: ${collisionPercentage}%`;
         collisionList.appendChild(listItem);
     }
 }

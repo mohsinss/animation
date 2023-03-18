@@ -265,7 +265,7 @@ document.body.appendChild(circleListContainer);
 
 function resetAnimation() {
     circles.length = 0;
-    createCircles(30);
+    createCircles(10);
 }
 
 const resetButton = document.getElementById('resetButton');

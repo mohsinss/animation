@@ -166,6 +166,14 @@ function animate() {
 
     requestAnimationFrame(animate);
 }
+function resetAnimation() {
+    circles.length = 0;
+    createCircles(30);
+}
+
+const resetButton = document.getElementById('resetButton');
+resetButton.addEventListener('click', resetAnimation);
+
 
 createCircles(30);
 animate();

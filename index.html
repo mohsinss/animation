@@ -3,17 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Circle Collisions</title>
+    <title>Circle Animation</title>
     <style>
+      /* Add green, thick borders to the body element */
+      body {
+        border: 5px solid green;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        display: flex;
+        justify-content: space-between;
+      }
+      /* Style the right container */
+      .right-container {
+        width: 200px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f8f8f8;
+      }
+      body {
+        margin: 0;
+        position: relative;
+        overflow: hidden;
+      }
       canvas {
         display: block;
         margin: 0 auto;
         background-color: #000;
       }
+      #resetButton {
+        position: absolute;
+        top: 10px;
+        right: 100px;
+        z-index: 1;
+        font-size: 1.25em;
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+      .reset-button:hover {
+        background-color: #0056b3;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+      }
     </style>
   </head>
   <body>
+    <div class="container">
+      <!-- Your left content goes here -->
+      <div class="left-container">
+        <!-- Your HTML content goes here -->
+      </div>
+
+      <!-- Right container -->
+    </div>
+
     <canvas id="circleCanvas" width="1200" height="650"></canvas>
+    <button id="resetButton" , width="60px" type="button">Reset</button>
     <script src="circles.js"></script>
   </body>
 </html>

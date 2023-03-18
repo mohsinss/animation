@@ -8,7 +8,7 @@ class Circle {
         this.color = color;
         this.growRate = 0.05;
         this.attractionForce = 0.0001;
-        this.friction = 0.9999999; // Adjust this value
+        this.friction = 0.70; // Adjust this value
         //this.letter = String.fromCharCode(Math.floor(random(65, 91)));
         const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
         this.letter = arabicLetters[Math.floor(random(0, arabicLetters.length))];
@@ -16,19 +16,33 @@ class Circle {
     
 
     draw(ctx) {
+        const largestCircle = getLargestCircle();
+        
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = this.color;
+        
+        if (this === largestCircle) {
+            ctx.fillStyle = 'rgba(40, 300, 255, 0.8)'; // Shiny blue
+            ctx.strokeStyle = 'rgba(255, 20, 147, 0.8)'; // Pink
+            ctx.lineWidth = 2;
+        } else {
+            ctx.fillStyle = this.color;
+            ctx.strokeStyle = this.color;
+            ctx.lineWidth = 0.5;
+        }
+        
         ctx.fill();
+        ctx.stroke();
         ctx.closePath();
-            // Draw the letter
-    // ctx.font = `${Math.floor(this.radius * 0.7)}px Arial`;
-    ctx.font = `${Math.floor(this.radius * 0.7)}px Arial`; // Use a font that supports Arabic characters
-    ctx.fillStyle = 'white';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(this.letter, this.x, this.y);
+    
+        // Draw the letter
+        ctx.font = `${Math.floor(this.radius * 0.7)}px Arial`;
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.letter, this.x, this.y);
     }
+    
 
     update(canvas, circles) {
         // Collision with borders
@@ -38,26 +52,42 @@ class Circle {
         if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
             this.dy = -this.dy;
         }
-
+    
         let isConnected = false;
-
+        const largestCircle = getLargestCircle();
+    
+        // Attract other circles to collide with the largest circle
+        if (this !== largestCircle) {
+            const dx = largestCircle.x - this.x;
+            const dy = largestCircle.y - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+    
+            if (distance > largestCircle.radius + this.radius) {
+                const forceX = dx * this.attractionForce * 2;
+                const forceY = dy * this.attractionForce * 2;
+    
+                this.dx += forceX;
+                this.dy += forceY;
+            }
+        }
+    
         // Collision with other circles
         for (const circle of circles) {
             if (circle === this) continue;
-
+    
             const dx = this.x - circle.x;
             const dy = this.y - circle.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-
+    
             if (distance < this.radius + circle.radius) {
                 this.dx = -this.dx;
                 this.dy = -this.dy;
-
+    
                 // Reduce circle size by 10%
-            this.radius *= 0.99;
-            circle.radius *= 0.99;
+                this.radius *= 0.99;
+                circle.radius *= 0.99;
             }
-
+    
             // Draw a line between circles when they're close
             if (distance < 100) {
                 ctx.beginPath();
@@ -67,16 +97,17 @@ class Circle {
                 ctx.lineWidth = 0.5;
                 ctx.stroke();
                 ctx.closePath();
-                 // Apply attraction force
+                
+                // Apply attraction force
                 const forceX = (circle.x - this.x) * this.attractionForce;
                 const forceY = (circle.y - this.y) * this.attractionForce;
-
+    
                 this.dx += forceX;
                 this.dy += forceY;
-
+    
                 circle.dx -= forceX;
                 circle.dy -= forceY;
-
+    
                 isConnected = true;
             }
         }
@@ -84,11 +115,13 @@ class Circle {
             this.dx *= this.friction;
             this.dy *= this.friction;
         }
+        
         // Grow the circle slowly
         this.radius += this.growRate;
         this.x += this.dx;
         this.y += this.dy;
     }
+    
 }
 
 const canvas = document.getElementById("circleCanvas");
@@ -98,6 +131,12 @@ const circles = [];
 
 function random(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+function getLargestCircle() {
+    return circles.reduce((largest, circle) => {
+        return circle.radius > largest.radius ? circle : largest;
+    }, circles[0]);
 }
 
 function createCircles(numCircles) {

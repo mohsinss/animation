@@ -10,7 +10,10 @@ class Circle {
         this.attractionForce = 0.0001;
         this.friction = 0.70; // Adjust this value
         //this.letter = String.fromCharCode(Math.floor(random(65, 91)));
-        const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+        // const arabicLetters = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي";
+        const arabicLetters = "ABIGAEL";
+        this.collisionCounter = 0;
+
         this.letter = arabicLetters[Math.floor(random(0, arabicLetters.length))];
     }
     
@@ -86,6 +89,9 @@ class Circle {
                 // Reduce circle size by 10%
                 this.radius *= 0.99;
                 circle.radius *= 0.99;
+                // Increment the collisionCounter for both circles
+                this.collisionCounter++;
+                circle.collisionCounter++;
             }
     
             // Draw a line between circles when they're close
@@ -163,9 +169,30 @@ function animate() {
         circle.draw(ctx);
         circle.update(canvas, circles);
     }
-
+    updateCollisionList(); // Update the list of circles and their collision counts
     requestAnimationFrame(animate);
 }
+// Add a function to update the list of circles and their collision counts
+function updateCollisionList() {
+    const collisionList = document.getElementById("collisionList");
+    collisionList.innerHTML = "";
+
+    for (const circle of circles) {
+        const listItem = document.createElement("li");
+        listItem.textContent = `Circle ${circles.indexOf(circle) + 1}: ${circle.collisionCounter} collisions`;
+        collisionList.appendChild(listItem);
+    }
+}
+
+// Add an HTML element to display the list of circles and their collision counts
+const circleListContainer = document.createElement("div");
+circleListContainer.innerHTML = `
+    <h3>Collision List</h3>
+    <ul id="collisionList"></ul>
+`;
+
+document.body.appendChild(circleListContainer);
+
 function resetAnimation() {
     circles.length = 0;
     createCircles(30);
@@ -175,5 +202,5 @@ const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAnimation);
 
 
-createCircles(30);
+createCircles(10);
 animate();

@@ -64,18 +64,25 @@ class Circle {
     
 
     update(canvas, circles) {
-        // Collision with borders
-        if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
-            this.dx = -this.dx;
-        }
-        if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
-            this.dy = -this.dy;
-        }
+         // Collision with borders
+    if (this.x + this.radius > canvas.width) {
+        this.x = canvas.width - this.radius;
+        this.dx = -this.dx;
+    } else if (this.x - this.radius < 0) {
+        this.x = this.radius;
+        this.dx = -this.dx;
+    }
+    if (this.y + this.radius > canvas.height) {
+        this.y = canvas.height - this.radius;
+        this.dy = -this.dy;
+    } else if (this.y - this.radius < 0) {
+        this.y = this.radius;
+        this.dy = -this.dy;
+    }
     
         let isConnected = false;
         const largestCircle = getLargestCircle();
-    
-        // Attract other circles to collide with the largest circle
+
         if (this !== largestCircle) {
             const dx = largestCircle.x - this.x;
             const dy = largestCircle.y - this.y;
@@ -87,6 +94,23 @@ class Circle {
     
                 this.dx += forceX;
                 this.dy += forceY;
+            }
+        } else {
+            // Make the largest circle run away from the rest of the circles
+            for (const circle of circles) {
+                if (circle === this) continue;
+    
+                const dx = this.x - circle.x;
+                const dy = this.y - circle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+    
+                if (distance < this.radius + circle.radius + 100) {
+                    const forceX = dx * this.attractionForce * 4;
+                    const forceY = dy * this.attractionForce * 4;
+    
+                    this.dx += forceX;
+                    this.dy += forceY;
+                }
             }
         }
     
@@ -109,6 +133,7 @@ class Circle {
                 this.collisionCounter++;
                 circle.collisionCounter++;
             }
+            
     
             // Draw a line between circles when they're close
             if (distance < 100) {
